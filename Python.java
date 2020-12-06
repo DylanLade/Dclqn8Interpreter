@@ -11,7 +11,7 @@ public class Python {
         String operator = tokens.nextToken();
         String value = tokens.nextToken();
 
-        if(checkVar(value)) {
+        if (checkVar(value)) {
             value = vars_table.get(value);
         }
 
@@ -20,42 +20,49 @@ public class Python {
             int val = Integer.parseInt(value);
             String result = String.valueOf(current + val);
             vars_table.put(varName, result);
-        } if (operator.equals("-=") && checkVar(varName)) {
+        }
+        if (operator.equals("-=") && checkVar(varName)) {
             int current = Integer.parseInt(vars_table.get(varName));
             int val = Integer.parseInt(value);
             String result = String.valueOf(current - val);
             vars_table.put(varName, result);
-        } if (operator.equals("*=") && checkVar(varName)) {
+        }
+        if (operator.equals("*=") && checkVar(varName)) {
             int current = Integer.parseInt(vars_table.get(varName));
             int val = Integer.parseInt(value);
             String result = String.valueOf(current * val);
             vars_table.put(varName, result);
-        } if (operator.equals("/=") && checkVar(varName)) {
+        }
+        if (operator.equals("/=") && checkVar(varName)) {
             int current = Integer.parseInt(vars_table.get(varName));
             int val = Integer.parseInt(value);
             String result = String.valueOf(current / val);
             vars_table.put(varName, result);
-        } if (operator.equals("^=") && checkVar(varName)) {
+        }
+        if (operator.equals("^=") && checkVar(varName)) {
             int current = Integer.parseInt(vars_table.get(varName));
             int val = Integer.parseInt(value);
             String result = String.valueOf(current ^ val);
             vars_table.put(varName, result);
-        } if (operator.equals("%=") && checkVar(varName)) {
+        }
+        if (operator.equals("%=") && checkVar(varName)) {
             int current = Integer.parseInt(vars_table.get(varName));
             int val = Integer.parseInt(value);
             String result = String.valueOf(current % val);
             vars_table.put(varName, result);
-        } if(operator.equals("=") && checkVar(varName)){
+        }
+        if (operator.equals("=") && checkVar(varName)) {
             vars_table.replace(varName, value);
-        } if(operator.equals("=") && !checkVar(varName)) {
+        }
+        if (operator.equals("=") && !checkVar(varName)) {
             vars_table.put(varName, value);
         }
         System.out.println("End of makeVar");
         System.out.println(vars_table);
-    } 
+    }
 
     static boolean checkVar(String varName) {
-        if(vars_table.containsKey(varName)) {
+        if (vars_table.containsKey(varName)) {
             return true;
         } else {
             return false;
@@ -72,11 +79,13 @@ public class Python {
         tokens.nextToken();
         String op = tokens.nextToken();
 
-        if(conditional.contains(op)) {
+        if (conditional.contains(op)) {
             return "conditional";
-        } if(assignment.contains(op)) {
+        }
+        if (assignment.contains(op)) {
             return "assignment";
-        } if(arithmetic.contains(op)) {
+        }
+        if (arithmetic.contains(op)) {
             return "arithmetic";
         } else {
             return "notOP";
@@ -99,16 +108,19 @@ public class Python {
     static void function(String line, BufferedReader br) {
         StringTokenizer tokens = new StringTokenizer(line, "()");
         String funct = tokens.nextToken();
-        if(funct.equals("if")) {
+        if (funct.equals("if")) {
             System.out.println(funct);
             System.out.println(tokens.nextToken());
-        } if(funct.equals("print")) {
+        }
+        if (funct.equals("print")) {
             System.out.println(funct);
             System.out.println(tokens.nextToken());
-        } if(funct.equals("while")) {
+        }
+        if (funct.equals("while")) {
             System.out.println(funct);
             System.out.println(tokens.nextToken());
-        } if(funct.equals("for")) {
+        }
+        if (funct.equals("for")) {
             System.out.println(funct);
             System.out.println(tokens.nextToken());
         } else {
@@ -117,71 +129,110 @@ public class Python {
     }
 
     static boolean checkCond(String first, String operator, String second) {
-        Object left;
-        Object right;
-        
-        if(checkVar(first)) { // check if the first 
-            System.out.println("Var exists");
-            if(isNumeric(vars_table.get(first))) {
-                System.out.println("Var is num");
-                left = Integer.parseInt(vars_table.get(first));
-            } else {
-                left = vars_table.get(first);
-            }
-        } if(isNumeric(first) && !checkVar(first)) {
-            left = Integer.parseInt(first);
-        } else {
-            left = first;
-        } 
+        int leftInt = 0;
+        int rightInt = -1;
+        String leftStr = "";
+        String rightStr = "";
 
-        if(checkVar(second)) {
-            if(isNumeric(vars_table.get(second))) {
-                right = Integer.parseInt(vars_table.get(second));
+        int lisInt = 0;
+        int risInt = 0;
+
+        if (checkVar(first)) { // check if the first
+            System.out.println("Var exists");
+            if (isNumeric(vars_table.get(first))) {
+                System.out.println("Var is num");
+                leftInt = Integer.parseInt(vars_table.get(first));
+                lisInt = 1;
             } else {
-                right = vars_table.get(second);
+                leftStr = vars_table.get(first);
+                lisInt = 0;
             }
-        } if(isNumeric(second) && !checkVar(second)) {
-            right = Integer.parseInt(second);
+        }
+        if (isNumeric(first) && !checkVar(first)) {
+            leftInt = Integer.parseInt(first);
+            lisInt = 1;
         } else {
-            right = second;
+            leftStr = first;
+            lisInt = 0;
         }
 
-        System.out.println(left);
-        System.out.println(right);
+        if (checkVar(second)) {
+            if (isNumeric(vars_table.get(second))) {
+                rightInt = Integer.parseInt(vars_table.get(second));
+                risInt = 1;
+            } else {
+                rightStr = vars_table.get(second);
+                risInt = 0;
+            }
+        }
+        if (isNumeric(second) && !checkVar(second)) {
+            rightInt = Integer.parseInt(second);
+            risInt = 1;
+        } else {
+            rightStr = second;
+            risInt = 0;
+        }
 
-        if (operator.equals("==")) {
-            if(left == right) {
-                return true;
+        if (lisInt == 1 && risInt == 1) {
+            if (operator.equals("==")) {
+                if (leftInt == rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (operator.equals("<=")) {
+                if (leftInt > rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (operator.equals(">=")) {
+                if (leftInt < rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (operator.equals("<")) {
+                if (leftInt < rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (operator.equals(">")) {
+                if (leftInt > rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (operator.equals("!=")) {
+                if (leftInt != rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-        } if(operator.equals("<=")){
-            if((int) left > (int) right) {
-                return true;
-            } else {
-                return false;
+        }
+        if (lisInt == 0 && risInt == 0) {
+            if (operator.equals("==")) {
+                if (leftStr == rightStr) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        } if(operator.equals(">=")){
-            if((int) left < (int) right) {
-                return true;
-            } else {
-                return false;
-            }
-        } if(operator.equals("<")){
-            if((int)left < (int)right) {
-                return true;
-            } else {
-                return false;
-            }
-        } if(operator.equals(">")){
-            if((int)left > (int)right) {
-                return true;
-            } else {
-                return false;
-            }
-        } if(operator.equals("!=")){
-            if(left != right) {
-                return true;
+            if (operator.equals("!=")) {
+                if (leftInt != rightInt) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -190,21 +241,33 @@ public class Python {
         }
     }
 
-    static void ifLoop(String line, BufferedReader br) {
+    static void ifLoop(String line, BufferedReader br) throws IOException {
         StringTokenizer tokens = new StringTokenizer(line);
         String call = tokens.nextToken();
         String first = tokens.nextToken();
         String operator = tokens.nextToken();
-        String second = tokens.nextToken().replaceAll(":","");
+        String second = tokens.nextToken().replaceAll(":", "");
+        int loopTab = line.indexOf(line.trim());
 
-        if(checkCond(first, operator,second)) {
-            System.out.println("If is true");
+        if (checkCond(first, operator, second)) {
+            
+            String nextLine = br.readLine();
+            int nextTab = line.indexOf(line.trim());
+            while( (nextTab-loopTab) == 4) {
+                classifyLine(nextLine, br);
+                nextLine = br.readLine();
+            }
         } else {
-            System.out.println("If is false");
+            String nextLine = br.readLine();
+            int nextTab = line.indexOf(line.trim());
+            while( (nextTab-loopTab) == 4) {
+                nextLine = br.readLine();
+            }
+            classifyLine(nextLine, br);
         }
     }
 
-    static void classifyLine(String line, BufferedReader br) {
+    static void classifyLine(String line, BufferedReader br) throws IOException {
         StringTokenizer token = new StringTokenizer(line);
         String first = token.nextToken();
         if( first.equals("if") ) {
