@@ -4,10 +4,6 @@ import java.util.*;
 public class Python {
 
     static Hashtable<String, String> vars_table = new Hashtable<String, String>();
-    static int skip = 0;
-    static int isif = 0;
-    static int iswhile = 0;
-    static int isfor = 0;
 
     static void makeVar(String line) {
         StringTokenizer tokens = new StringTokenizer(line);
@@ -54,6 +50,8 @@ public class Python {
         } if(operator.equals("=") && !checkVar(varName)) {
             vars_table.put(varName, value);
         }
+        System.out.println("End of makeVar");
+        System.out.println(vars_table);
     } 
 
     static boolean checkVar(String varName) {
@@ -85,7 +83,20 @@ public class Python {
         }
     }
 
-    static void function(String line) {
+    static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int i = Integer.parseInt(strNum);
+            System.out.println(i);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    static void function(String line, BufferedReader br) {
         StringTokenizer tokens = new StringTokenizer(line, "()");
         String funct = tokens.nextToken();
         if(funct.equals("if")) {
@@ -105,18 +116,102 @@ public class Python {
         }
     }
 
-    static void ifLoop(String line) {
+    static boolean checkCond(String first, String operator, String second) {
+        Object left;
+        Object right;
+        
+        if(checkVar(first)) { // check if the first 
+            System.out.println("Var exists");
+            if(isNumeric(vars_table.get(first))) {
+                System.out.println("Var is num");
+                left = Integer.parseInt(vars_table.get(first));
+            } else {
+                left = vars_table.get(first);
+            }
+        } if(isNumeric(first) && !checkVar(first)) {
+            left = Integer.parseInt(first);
+        } else {
+            left = first;
+        } 
 
+        if(checkVar(second)) {
+            if(isNumeric(vars_table.get(second))) {
+                right = Integer.parseInt(vars_table.get(second));
+            } else {
+                right = vars_table.get(second);
+            }
+        } if(isNumeric(second) && !checkVar(second)) {
+            right = Integer.parseInt(second);
+        } else {
+            right = second;
+        }
+
+        System.out.println(left);
+        System.out.println(right);
+
+        if (operator.equals("==")) {
+            if(left == right) {
+                return true;
+            } else {
+                return false;
+            }
+        } if(operator.equals("<=")){
+            if((int) left > (int) right) {
+                return true;
+            } else {
+                return false;
+            }
+        } if(operator.equals(">=")){
+            if((int) left < (int) right) {
+                return true;
+            } else {
+                return false;
+            }
+        } if(operator.equals("<")){
+            if((int)left < (int)right) {
+                return true;
+            } else {
+                return false;
+            }
+        } if(operator.equals(">")){
+            if((int)left > (int)right) {
+                return true;
+            } else {
+                return false;
+            }
+        } if(operator.equals("!=")){
+            if(left != right) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
-    static void classifyLine(String line) {
+    static void ifLoop(String line, BufferedReader br) {
         StringTokenizer tokens = new StringTokenizer(line);
+        String call = tokens.nextToken();
         String first = tokens.nextToken();
+        String operator = tokens.nextToken();
+        String second = tokens.nextToken().replaceAll(":","");
+
+        if(checkCond(first, operator,second)) {
+            System.out.println("If is true");
+        } else {
+            System.out.println("If is false");
+        }
+    }
+
+    static void classifyLine(String line, BufferedReader br) {
+        StringTokenizer token = new StringTokenizer(line);
+        String first = token.nextToken();
         if( first.equals("if") ) {
-            ifLoop(line);
+            ifLoop(line, br);
         } if( line.contains("(") ) {
-            function(line);
-        } if( checkOp(line).equals("assignment") ) {
+            function(line, br);
+        } if( checkOp(line).equals("assignment") && !line.contains("\t") || !line.contains("    ")) {
             makeVar(line);
         } if( first.equals("#") ) {
             System.out.println(line);
@@ -128,20 +223,15 @@ public class Python {
 
         try {
             br = new BufferedReader(new FileReader(args[0]));
-            String line = br.readLine().trim();
+            String line = br.readLine();
             while (line != null) {
                 if(line.isEmpty()) {
-                    line = br.readLine().trim();
+                    line = br.readLine();
                     continue;
                 }
-
-                while(skip > 0) {
-                    line = br.readLine().trim();
-                    skip = skip - 1;
-                }
-
-                classifyLine(line);
-                line = br.readLine().trim();
+                System.out.println(line);
+                classifyLine(line, br);
+                line = br.readLine();
             }
 
             System.out.println(vars_table);
