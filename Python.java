@@ -269,7 +269,28 @@ public class Python {
     }
     
     static void whileLoop(String line, BufferedReader br) throws IOException {
+        List<String> lines = new ArrayList();
+        int loopTab = line.indexOf(line.trim());
         
+        if(line.contains("(")) {
+            StringTokenizer splitCall = new StringTokenizer(line, "()");
+            String call = splitCall.nextToken();
+            String inside = splitCall.nextToken();
+            
+            StringTokenizer condition = new StringTokenizer(inside);
+            String left = condition.nextToken();
+            String operator = condition.nextToken();
+            String right = condition.nextToken();
+            
+            String nextLine = br.readline();
+            int nextTab = line.indexOf(line.trim());
+            while( (nextTab-loopTab) == 4) {
+                lines.add(nextLine);
+                nextLine = br.readLine();
+            }
+            
+            // Build while logic with lines above
+        }
     }
     
     static void forLoop(String line, BufferedReader br) throws IOException {
