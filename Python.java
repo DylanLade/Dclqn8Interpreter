@@ -113,8 +113,9 @@ public class Python {
             System.out.println(tokens.nextToken());
         }
         if (funct.equals("print")) {
-            System.out.println(funct);
-            System.out.println(tokens.nextToken());
+            pyprint(line);
+            line = br.readLine();
+            classifyLine(line, br);
         }
         if (funct.equals("while")) {
             System.out.println(funct);
@@ -274,6 +275,30 @@ public class Python {
     static void forLoop(String line, BufferedReader br) throws IOException {
         
     }
+    
+    static void pyPrint(String line) {
+        StringTokenizer splitCall = new StringTokenizer(line, "()");
+        String call = splitCall.nextToken();
+        String inside = splitCall.nextToken();
+        
+        List<String> content = new ArrayList();
+        StringTokenizer splitContent = new StringTokenizer(inside, "+");
+        while( splitContent.hasMoreTokens() ){
+            String tok = splitContent.nextToken();
+            if(checkVar(tok)){
+                content.add(vars_table.get(tok);   
+            }else {
+                content.add(tok);
+            }
+        }
+        
+        String output = new String();
+        for(String temp : content) {
+            output.concat(temp);
+        }
+        
+        System.out.println(output);
+    }
 
     static void classifyLine(String line, BufferedReader br) throws IOException {
         StringTokenizer token = new StringTokenizer(line);
@@ -288,8 +313,8 @@ public class Python {
             function(line, br);
         } if( checkOp(line).equals("assignment") && line.indexOf(line.trim()) > 0 ) {
             makeVar(line);
-        } if( first.equals("#") ) {
-            System.out.println(line);
+        } if( first.contains("#") ) {
+            System.out.println("Comment" + line);
         } 
     }
     
