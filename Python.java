@@ -266,15 +266,27 @@ public class Python {
             classifyLine(nextLine, br);
         }
     }
+    
+    static void whileLoop(String line, BufferedReader br) throws IOException {
+        
+    }
+    
+    static void forLoop(String line, BufferedReader br) throws IOException {
+        
+    }
 
     static void classifyLine(String line, BufferedReader br) throws IOException {
         StringTokenizer token = new StringTokenizer(line);
         String first = token.nextToken();
         if( first.equals("if") ) {
             ifLoop(line, br);
+        } if(first.equals("while") {
+            whileLoop(line, br);  
+        } if(first.equals("for") {
+            forLoop(line, br);
         } if( line.contains("(") ) {
             function(line, br);
-        } if( checkOp(line).equals("assignment") && !line.contains("\t") || !line.contains("    ")) {
+        } if( checkOp(line).equals("assignment") && line.indexOf(line.trim()) > 0 ) {
             makeVar(line);
         } if( first.equals("#") ) {
             System.out.println(line);
