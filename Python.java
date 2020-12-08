@@ -249,21 +249,21 @@ public class Python {
         String operator = tokens.nextToken();
         String second = tokens.nextToken().replaceAll(":", "");
         int loopTab = line.indexOf(line.trim());
+        
+        String nextLine = br.readLine();
+        int nextTab = line.indexOf(line.trim());
+                while( (nextTab-loopTab) == 4) {
+                    lines.add(nextLine);
+                    nextLine = br.readLine();
+                }
 
         if (checkCond(first, operator, second)) {
-            
-            String nextLine = br.readLine();
-            int nextTab = line.indexOf(line.trim());
-            while( (nextTab-loopTab) == 4) {
+            for( String line : lines) {
                 classifyLine(nextLine, br);
                 nextLine = br.readLine();
             }
         } else {
             String nextLine = br.readLine();
-            int nextTab = line.indexOf(line.trim());
-            while( (nextTab-loopTab) == 4) {
-                nextLine = br.readLine();
-            }
             classifyLine(nextLine, br);
         }
     }
@@ -289,7 +289,57 @@ public class Python {
                 nextLine = br.readLine();
             }
             
-            // Build while logic with lines above
+            while(checkCond(left, operator, right)) {
+            for(String line : lines) {
+                classifyLine(line);   
+            }
+        }
+            
+        } else {
+            StringTokenizer splitCall = new StringTokenizer(line);
+            String call = splitCall.nextToken();
+            String left = splitCall.nextToken();
+            String operator =  splitCall.nextToken();
+            String right = splitCall.nextToken();
+            
+            if(splitCall.hasMoreTokens()) {
+                String condition = splitCall.nextToken();
+                String eLeft = splitCall.nextToken();
+                String eOperator = splitCall.nextToken();
+                String eRight = splitCall.nextToken();
+                String nextLine = br.readline();
+                
+                int nextTab = line.indexOf(line.trim());
+                while( (nextTab-loopTab) == 4) {
+                    lines.add(nextLine);
+                    nextLine = br.readLine();
+                }
+                
+                if(condition.equals("AND") {
+                    while(checkCond(left, operator, right) && checkCond(eleft, eoperator, eright)) {
+                        for(String line : lines) {
+                            classifyLine(line)   
+                        }
+                    }
+                } if(condition.equals("OR") {
+                    while(checkCond(left, operator, right) || checkCond(eLeft, eOperator, eRight)) {
+                        for(String line : lines) {
+                            classifyLine(line)   
+                        }
+                }
+            } else {
+                int nextTab = line.indexOf(line.trim());
+                while( (nextTab-loopTab) == 4) {
+                    lines.add(nextLine);
+                    nextLine = br.readLine();
+                }    
+                    
+                while(checkCond(left, operator, right)) {
+                    for(String line : lines) {
+                        classifyLine(line)   
+                    }
+                }
+            }
         }
     }
     
@@ -336,9 +386,11 @@ public class Python {
             makeVar(line);
         } if( first.contains("#") ) {
             System.out.println("Comment" + line);
-        } 
+        } if(line .isEmpty()) {
+               System.out.println("Empty");
+        }
     }
-    
+                  
     public static void main(String args[]) {
         BufferedReader br;
 
@@ -348,7 +400,6 @@ public class Python {
             while (line != null) {
                 if(line.isEmpty()) {
                     line = br.readLine();
-                    continue;
                 }
                 System.out.println(line);
                 classifyLine(line, br);
