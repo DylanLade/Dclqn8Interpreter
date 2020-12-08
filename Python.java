@@ -344,7 +344,27 @@ public class Python {
     }
     
     static void forLoop(String line, BufferedReader br) throws IOException {
+        int loopTab = line.indexOf(line.trim());
         
+        StringTokenizer splitCall = new StringTokenizer(line);
+        String call = splitCall.nextToken();
+        String iterator = splitCall.nextToken();
+        String operator = splitCall.nextToken();
+        String condition = splitCall.nextToken();
+        
+        makeVar(iterator);
+        
+        List<String> content = new ArrayList<String>();
+        String nextLine = br.readLine();
+        int nextTab = nextLine.indexOf(nextLine.trim());
+        while((nextTab-loopTab) == 4) {
+            content.add(nextLine());
+            nextLine = br.readLine();
+        }
+        
+        
+        
+        varx_table.remove(interator);
     }
     
     static void pyPrint(String line) {
