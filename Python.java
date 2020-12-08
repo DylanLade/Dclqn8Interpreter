@@ -356,6 +356,8 @@ public class Python {
         StringTokenizer splitContent = new StringTokenizer(inside, "+");
         while( splitContent.hasMoreTokens() ){
             String tok = splitContent.nextToken();
+            tok.replaceAll("str(","");
+            tok.replaceAll(")","");
             if(checkVar(tok)){
                 content.add(vars_table.get(tok);   
             }else {
